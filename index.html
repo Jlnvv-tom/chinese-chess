@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>楚河漢界 · 3D 中国象棋</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="gl"></canvas>
+
+  <!-- 顶部标题与回合指示 -->
+  <header id="topbar">
+    <div class="brand">
+      <h1>楚河漢界</h1>
+      <p>3D 中国象棋 · 完整规则</p>
+    </div>
+    <div id="turn-chip" class="turn-chip red">
+      <span class="dot"></span><span id="turn-text">红方行棋</span>
+    </div>
+  </header>
+
+  <!-- 侧面板 -->
+  <aside id="panel">
+    <section class="card">
+      <h2>对局</h2>
+      <div class="row">
+        <label>模式</label>
+        <select id="sel-mode">
+          <option value="ai">人机对战</option>
+          <option value="pvp">双人对战</option>
+        </select>
+      </div>
+      <div class="row" id="row-level">
+        <label>难度</label>
+        <select id="sel-level">
+          <option value="easy">初学</option>
+          <option value="normal" selected>棋友</option>
+          <option value="hard">国手</option>
+        </select>
+      </div>
+      <div class="row" id="row-side">
+        <label>执方</label>
+        <select id="sel-side">
+          <option value="red" selected>红先</option>
+          <option value="black">黑后</option>
+        </select>
+      </div>
+      <div class="stats">
+        <div><span id="stat-move">0</span><em>回合</em></div>
+        <div><span id="stat-idle">0/60</span><em>无吃子</em></div>
+      </div>
+      <div class="btns">
+        <button id="btn-new" class="primary">新 局</button>
+        <button id="btn-undo">悔 棋</button>
+        <button id="btn-flip">翻转视角</button>
+        <button id="btn-reset-view">复位视角</button>
+        <button id="btn-sound" class="on">音效 ♪</button>
+        <button id="btn-rules">规则说明</button>
+      </div>
+    </section>
+
+    <section class="card grow">
+      <h2>着法记录</h2>
+      <div id="moves" class="moves"><p class="empty">尚未行棋</p></div>
+    </section>
+
+    <section class="card">
+      <h2>战果</h2>
+      <div class="captured">
+        <div class="cap-row"><span class="cap-label red">红方战果</span><div id="cap-red" class="cap-list"></div></div>
+        <div class="cap-row"><span class="cap-label black">黑方战果</span><div id="cap-black" class="cap-list"></div></div>
+      </div>
+    </section>
+  </aside>
+
+  <!-- 底部提示 -->
+  <div id="hint">点击棋子查看可走位置 · 拖动旋转视角 · 滚轮缩放 · 右键拖动平移</div>
+  <div id="thinking" class="hidden"><span class="spinner"></span>对方思索中…</div>
+
+  <!-- 结算弹窗 -->
+  <div id="modal-result" class="modal hidden">
+    <div class="modal-box">
+      <div id="result-icon" class="result-icon">帥</div>
+      <h2 id="result-title">红方胜</h2>
+      <p id="result-detail">黑方被将死</p>
+      <button id="btn-again" class="primary big">再来一局</button>
+    </div>
+  </div>
+
+  <!-- 规则弹窗 -->
+  <div id="modal-rules" class="modal hidden">
+    <div class="modal-box wide">
+      <h2>行棋规则</h2>
+      <div class="rules-grid">
+        <div><h3>帥 / 將</h3><p>每着沿直线走一步，不出九宫。双方将帅不可在同一纵线直接照面（飞将）。</p></div>
+        <div><h3>仕 / 士</h3><p>每着沿斜线走一步，限在九宫内，全程五个落脚点。</p></div>
+        <div><h3>相 / 象</h3><p>走「田」字对角，不可过河；田心有子则塞象眼，不能走。</p></div>
+        <div><h3>傌 / 馬</h3><p>走「日」字，先直后斜；直行方向有子挡住马腿则不能走。</p></div>
+        <div><h3>俥 / 車</h3><p>沿直线任意步数，遇子止步，可吃对方棋子。</p></div>
+        <div><h3>炮 / 砲</h3><p>不吃子时同车；吃子必须隔一个棋子（炮架）打对方的子。</p></div>
+        <div><h3>兵 / 卒</h3><p>只能向前走一步；过河后可左右各一步，永不后退。</p></div>
+        <div><h3>胜负与和棋</h3><p>将死或困毙对方者胜；六十回合无吃子判和；局面三次重复判和，长将判负；双方均无车马炮兵判和。</p></div>
+      </div>
+      <button id="btn-close-rules" class="primary big">知道了</button>
+    </div>
+  </div>
+
+  <script src="vendor/three.min.js"></script>
+  <script src="js/rules.js"></script>
+  <script src="js/textures.js"></script>
+  <script src="js/pieces3d.js"></script>
+  <script src="js/scene3d.js"></script>
+  <script src="js/controls.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/interaction.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

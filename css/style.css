@@ -1,0 +1,194 @@
+/* style.css — 暗色玻璃拟态 HUD，金红国风配色 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --gold: #e8c26a;
+  --gold-dim: #b98c3f;
+  --red: #c0392b;
+  --red-bright: #ff6b4a;
+  --ink: #f0e6d2;
+  --ink-dim: #a89880;
+  --panel: rgba(20, 16, 12, 0.72);
+  --panel-line: rgba(232, 194, 106, 0.22);
+}
+
+html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0806; }
+
+body {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  color: var(--ink);
+  user-select: none;
+}
+
+#gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+#gl:active { cursor: grabbing; }
+
+/* ---------- 顶栏 ---------- */
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 18px 26px; pointer-events: none; z-index: 10;
+}
+.brand h1 {
+  font-family: "STKaiti", "Kaiti SC", "KaiTi", serif;
+  font-size: 34px; letter-spacing: 10px; color: var(--gold);
+  text-shadow: 0 2px 18px rgba(232, 194, 106, 0.35);
+}
+.brand p { font-size: 12px; color: var(--ink-dim); letter-spacing: 4px; margin-top: 4px; }
+
+.turn-chip {
+  pointer-events: none;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px; border-radius: 999px;
+  background: var(--panel); border: 1px solid var(--panel-line);
+  backdrop-filter: blur(10px); font-size: 15px; letter-spacing: 2px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+}
+.turn-chip .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--red-bright); box-shadow: 0 0 12px var(--red-bright); }
+.turn-chip.black .dot { background: #4a5568; box-shadow: 0 0 12px #2d3748; }
+.turn-chip.alert { animation: pulse 0.9s infinite; border-color: rgba(255, 80, 60, 0.6); }
+@keyframes pulse { 50% { box-shadow: 0 0 26px rgba(255, 70, 50, 0.55); } }
+
+/* ---------- 侧面板 ---------- */
+#panel {
+  position: fixed; top: 96px; right: 18px; bottom: 18px; width: 292px;
+  display: flex; flex-direction: column; gap: 12px; z-index: 10;
+}
+.card {
+  background: var(--panel); border: 1px solid var(--panel-line);
+  border-radius: 14px; padding: 14px 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+.card h2 {
+  font-family: "STKaiti", "Kaiti SC", serif;
+  font-size: 17px; color: var(--gold); letter-spacing: 6px;
+  margin-bottom: 10px; padding-bottom: 8px;
+  border-bottom: 1px solid rgba(232, 194, 106, 0.16);
+}
+.card.grow { flex: 1; min-height: 120px; display: flex; flex-direction: column; }
+
+.row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--ink-dim); }
+select {
+  background: rgba(40, 32, 22, 0.9); color: var(--ink);
+  border: 1px solid var(--panel-line); border-radius: 8px;
+  padding: 5px 10px; font-size: 13px; outline: none; cursor: pointer;
+}
+.stats { display: flex; gap: 10px; margin: 10px 0 12px; }
+.stats div {
+  flex: 1; text-align: center; padding: 8px 0;
+  background: rgba(232, 194, 106, 0.07); border-radius: 10px;
+  border: 1px solid rgba(232, 194, 106, 0.12);
+}
+.stats span { display: block; font-size: 19px; color: var(--gold); font-weight: 600; }
+.stats em { font-style: normal; font-size: 11px; color: var(--ink-dim); }
+
+.btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+button {
+  padding: 9px 0; border-radius: 9px; border: 1px solid var(--panel-line);
+  background: rgba(60, 46, 30, 0.55); color: var(--ink);
+  font-size: 13px; letter-spacing: 2px; cursor: pointer;
+  transition: all 0.18s ease; font-family: inherit;
+}
+button:hover { background: rgba(232, 194, 106, 0.18); border-color: var(--gold-dim); transform: translateY(-1px); }
+button.primary {
+  background: linear-gradient(135deg, #a03a26, #7c2417);
+  border-color: rgba(232, 194, 106, 0.45); color: #ffe9c9; font-weight: 600;
+}
+button.primary:hover { background: linear-gradient(135deg, #b8472f, #8c2b1b); }
+button.big { padding: 12px 44px; font-size: 15px; margin-top: 14px; }
+button.on { color: var(--gold); }
+button.off { color: var(--ink-dim); opacity: 0.6; }
+
+/* ---------- 着法记录 ---------- */
+.moves { flex: 1; overflow-y: auto; font-size: 13.5px; line-height: 1.9; padding-right: 4px; }
+.moves::-webkit-scrollbar { width: 5px; }
+.moves::-webkit-scrollbar-thumb { background: rgba(232, 194, 106, 0.25); border-radius: 3px; }
+.moves .empty { color: var(--ink-dim); font-size: 12px; text-align: center; margin-top: 30px; }
+.moves .ply { display: flex; gap: 8px; padding: 1px 6px; border-radius: 6px; }
+.moves .ply:nth-child(odd) { background: rgba(255, 255, 255, 0.025); }
+.moves .no { color: var(--ink-dim); width: 26px; text-align: right; flex: none; }
+.moves .mv { flex: 1; font-family: "STKaiti", "Kaiti SC", serif; letter-spacing: 1px; }
+.moves .mv.red { color: #ffb9a0; }
+.moves .mv.black { color: #b8c4d8; }
+.moves .mv .chk { color: var(--red-bright); margin-left: 4px; font-size: 11px; }
+
+/* ---------- 战果 ---------- */
+.cap-row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; min-height: 26px; }
+.cap-label { font-size: 11px; width: 52px; flex: none; letter-spacing: 1px; }
+.cap-label.red { color: #ffb9a0; }
+.cap-label.black { color: #b8c4d8; }
+.cap-list { display: flex; flex-wrap: wrap; gap: 4px; }
+.cap-list .piece {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: "STKaiti", "Kaiti SC", serif; font-size: 14px;
+  border: 1px solid rgba(232, 194, 106, 0.35);
+}
+.cap-list .piece.red { background: radial-gradient(circle at 35% 30%, #c8503a, #7c2013); color: #f7d789; }
+.cap-list .piece.black { background: radial-gradient(circle at 35% 30%, #4a4f57, #191d22); color: #e9e4d2; }
+
+/* ---------- 底部提示 ---------- */
+#hint {
+  position: fixed; bottom: 16px; left: 26px; z-index: 10;
+  font-size: 12px; color: var(--ink-dim); letter-spacing: 1px;
+  background: var(--panel); border: 1px solid var(--panel-line);
+  padding: 8px 16px; border-radius: 999px; backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+#thinking {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 11;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--panel); border: 1px solid var(--panel-line);
+  padding: 10px 22px; border-radius: 999px; font-size: 13px; letter-spacing: 2px;
+  backdrop-filter: blur(10px);
+}
+#thinking.hidden, .modal.hidden { display: none; }
+.spinner {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid rgba(232, 194, 106, 0.25); border-top-color: var(--gold);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- 弹窗 ---------- */
+.modal {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(5, 4, 3, 0.72); backdrop-filter: blur(6px);
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } }
+.modal-box {
+  background: linear-gradient(160deg, rgba(38, 28, 18, 0.96), rgba(18, 14, 10, 0.97));
+  border: 1px solid var(--panel-line); border-radius: 20px;
+  padding: 38px 46px; text-align: center;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(232, 194, 106, 0.15);
+  animation: rise 0.35s cubic-bezier(0.2, 1.2, 0.4, 1);
+  max-width: min(92vw, 640px); max-height: 86vh; overflow-y: auto;
+}
+@keyframes rise { from { transform: translateY(26px) scale(0.96); opacity: 0; } }
+.modal-box.wide { text-align: left; }
+.modal-box h2 {
+  font-family: "STKaiti", "Kaiti SC", serif;
+  color: var(--gold); letter-spacing: 8px; font-size: 24px; margin-bottom: 14px; text-align: center;
+}
+.result-icon {
+  font-family: "STKaiti", "Kaiti SC", serif; font-size: 64px; color: var(--gold);
+  text-shadow: 0 0 34px rgba(232, 194, 106, 0.5); margin-bottom: 6px;
+}
+#result-detail { color: var(--ink-dim); font-size: 14px; letter-spacing: 2px; }
+
+.rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; margin: 8px 0 4px; }
+.rules-grid h3 {
+  font-family: "STKaiti", "Kaiti SC", serif; color: var(--gold);
+  font-size: 15px; letter-spacing: 2px; margin-bottom: 4px;
+}
+.rules-grid p { font-size: 12.5px; color: var(--ink-dim); line-height: 1.75; }
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  #panel { width: 250px; top: 88px; }
+  .brand h1 { font-size: 26px; }
+  .rules-grid { grid-template-columns: 1fr; }
+}
