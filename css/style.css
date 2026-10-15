@@ -60,12 +60,32 @@ body {
   backdrop-filter: blur(12px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
-.card h2 {
+.card h2, .card .card-head {
   font-family: "STKaiti", "Kaiti SC", serif;
   font-size: 17px; color: var(--gold); letter-spacing: 6px;
   margin-bottom: 10px; padding-bottom: 8px;
   border-bottom: 1px solid rgba(232, 194, 106, 0.16);
 }
+/* 可折叠卡片头部 */
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; user-select: none;
+  transition: margin-bottom 0.2s ease, padding-bottom 0.2s ease;
+}
+.card-head:hover { color: #f5d98a; }
+.card-head .arrow {
+  width: 0; height: 0; flex: none;
+  border-left: 5px solid transparent; border-right: 5px solid transparent;
+  border-top: 6px solid var(--gold-dim);
+  transition: transform 0.22s ease;
+}
+.card.collapsed .card-head { margin-bottom: 0; padding-bottom: 0; border-bottom-color: transparent; }
+.card.collapsed .card-head .arrow { transform: rotate(-90deg); }
+.card.collapsed .card-body { display: none; }
+.card-body { animation: cardIn 0.22s ease; }
+@keyframes cardIn { from { opacity: 0; transform: translateY(-4px); } }
+.card.grow.collapsed { flex: 0 0 auto; }
+.moves-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .card.grow { flex: 1; min-height: 120px; display: flex; flex-direction: column; }
 
 .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--ink-dim); }
@@ -144,6 +164,22 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
   backdrop-filter: blur(10px);
 }
 #thinking.hidden, .modal.hidden { display: none; }
+
+/* ---------- 浮动缩放控件 ---------- */
+#zoom-ctl {
+  position: fixed; bottom: 16px; right: 330px; z-index: 11;
+  display: flex; gap: 8px;
+}
+.zoom-btn {
+  width: 42px; height: 42px; padding: 0; border-radius: 50%;
+  font-size: 19px; line-height: 1; font-weight: 600;
+  background: var(--panel); border: 1px solid var(--panel-line);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+  display: flex; align-items: center; justify-content: center;
+}
+.zoom-btn:hover { background: rgba(232, 194, 106, 0.22); border-color: var(--gold); transform: translateY(-2px); }
+.zoom-btn:active { transform: translateY(0) scale(0.94); }
 .spinner {
   width: 14px; height: 14px; border-radius: 50%;
   border: 2px solid rgba(232, 194, 106, 0.25); border-top-color: var(--gold);
@@ -189,6 +225,7 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
 /* ---------- 响应式 ---------- */
 @media (max-width: 900px) {
   #panel { width: 250px; top: 88px; }
+  #zoom-ctl { right: 268px; }
   .brand h1 { font-size: 26px; }
   .rules-grid { grid-template-columns: 1fr; }
 }

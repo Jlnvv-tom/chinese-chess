@@ -114,7 +114,7 @@
     var gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.055), goldMat());
     gem.position.y = 0.66;
     g.add(gem);
-    g.add(facePlate(side === RED ? RED_CHAR[1] : BLACK_CHAR[1], side, 0.155, 0.27, 0.215, 0.5));
+    g.add(facePlate(side === RED ? RED_CHAR[1] : BLACK_CHAR[1], side, 0.19, 0.27, 0.21, 0.5));
     return g;
   }
 
@@ -141,7 +141,7 @@
     hat.position.y = 0.50;
     hat.rotation.x = 0.30; // 前倾
     g.add(hat);
-    g.add(facePlate(side === RED ? RED_CHAR[2] : BLACK_CHAR[2], side, 0.135, 0.25, 0.19, 0.45));
+    g.add(facePlate(side === RED ? RED_CHAR[2] : BLACK_CHAR[2], side, 0.165, 0.25, 0.185, 0.45));
     return g;
   }
 
@@ -183,7 +183,7 @@
       tusk.rotation.z = s * 0.3;
       g.add(tusk);
     });
-    g.add(facePlate(side === RED ? RED_CHAR[3] : BLACK_CHAR[3], side, 0.145, 0.42, 0.24, 0.42));
+    g.add(facePlate(side === RED ? RED_CHAR[3] : BLACK_CHAR[3], side, 0.18, 0.43, 0.235, 0.42));
     return g;
   }
 
@@ -232,7 +232,7 @@
     var nostril = new THREE.Mesh(new THREE.TorusGeometry(0.024, 0.008, 8, 16), goldMat());
     nostril.position.set(0, 0.245, 0.375);
     g.add(nostril);
-    g.add(facePlate(side === RED ? RED_CHAR[4] : BLACK_CHAR[4], side, 0.13, 0.19, 0.21, 0.42));
+    g.add(facePlate(side === RED ? RED_CHAR[4] : BLACK_CHAR[4], side, 0.16, 0.20, 0.205, 0.42));
     return g;
   }
 
@@ -288,7 +288,7 @@
       hub.rotation.z = Math.PI / 2;
       g.add(hub);
     });
-    g.add(facePlate(side === RED ? RED_CHAR[5] : BLACK_CHAR[5], side, 0.14, 0.28, 0.205, 0.42));
+    g.add(facePlate(side === RED ? RED_CHAR[5] : BLACK_CHAR[5], side, 0.175, 0.29, 0.20, 0.42));
     return g;
   }
 
@@ -332,7 +332,7 @@
       wheel.position.set(sgn * 0.21, 0.13, 0);
       g.add(wheel);
     });
-    g.add(facePlate(side === RED ? RED_CHAR[6] : BLACK_CHAR[6], side, 0.135, 0.21, 0.18, 0.45));
+    g.add(facePlate(side === RED ? RED_CHAR[6] : BLACK_CHAR[6], side, 0.165, 0.22, 0.175, 0.45));
     return g;
   }
 
@@ -360,7 +360,7 @@
     var plumeBall = new THREE.Mesh(new THREE.SphereGeometry(0.03, 12, 10), goldMat());
     plumeBall.position.y = 0.535;
     g.add(plumeBall);
-    g.add(facePlate(side === RED ? RED_CHAR[7] : BLACK_CHAR[7], side, 0.125, 0.235, 0.165, 0.42));
+    g.add(facePlate(side === RED ? RED_CHAR[7] : BLACK_CHAR[7], side, 0.15, 0.245, 0.16, 0.42));
     return g;
   }
 

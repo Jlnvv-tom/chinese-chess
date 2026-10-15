@@ -129,16 +129,20 @@
     ctx.strokeStyle = isRed ? 'rgba(255,210,150,0.55)' : 'rgba(200,205,215,0.45)';
     ctx.lineWidth = S * 0.012;
     ctx.beginPath();
-    ctx.arc(S / 2, S / 2, S * 0.40, 0, Math.PI * 2);
+    ctx.arc(S / 2, S / 2, S * 0.435, 0, Math.PI * 2);
     ctx.stroke();
-    // 字符
-    ctx.font = 'bold ' + Math.round(S * 0.56) + 'px "STKaiti","Kaiti SC","KaiTi","BiauKai","DFKai-SB",serif';
+    // 字符（大字号金漆，描边增强对比）
+    ctx.font = 'bold ' + Math.round(S * 0.70) + 'px "STKaiti","Kaiti SC","KaiTi","BiauKai","DFKai-SB",serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     var ink = isRed ? '#f7d789' : '#e9e4d2';
-    ctx.shadowColor = 'rgba(0,0,0,0.55)';
+    ctx.shadowColor = 'rgba(0,0,0,0.6)';
     ctx.shadowBlur = S * 0.02;
     ctx.shadowOffsetY = S * 0.012;
+    // 深色勾边先描一遍，再填字，任何背景下都清晰
+    ctx.lineWidth = S * 0.022;
+    ctx.strokeStyle = isRed ? 'rgba(60,12,4,0.9)' : 'rgba(8,10,14,0.9)';
+    ctx.strokeText(char, S / 2, S * 0.53);
     ctx.fillStyle = ink;
     ctx.fillText(char, S / 2, S * 0.53);
     ctx.shadowColor = 'transparent';

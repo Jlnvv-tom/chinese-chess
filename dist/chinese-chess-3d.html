@@ -67,12 +67,32 @@ body {
   backdrop-filter: blur(12px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
-.card h2 {
+.card h2, .card .card-head {
   font-family: "STKaiti", "Kaiti SC", serif;
   font-size: 17px; color: var(--gold); letter-spacing: 6px;
   margin-bottom: 10px; padding-bottom: 8px;
   border-bottom: 1px solid rgba(232, 194, 106, 0.16);
 }
+/* 可折叠卡片头部 */
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; user-select: none;
+  transition: margin-bottom 0.2s ease, padding-bottom 0.2s ease;
+}
+.card-head:hover { color: #f5d98a; }
+.card-head .arrow {
+  width: 0; height: 0; flex: none;
+  border-left: 5px solid transparent; border-right: 5px solid transparent;
+  border-top: 6px solid var(--gold-dim);
+  transition: transform 0.22s ease;
+}
+.card.collapsed .card-head { margin-bottom: 0; padding-bottom: 0; border-bottom-color: transparent; }
+.card.collapsed .card-head .arrow { transform: rotate(-90deg); }
+.card.collapsed .card-body { display: none; }
+.card-body { animation: cardIn 0.22s ease; }
+@keyframes cardIn { from { opacity: 0; transform: translateY(-4px); } }
+.card.grow.collapsed { flex: 0 0 auto; }
+.moves-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .card.grow { flex: 1; min-height: 120px; display: flex; flex-direction: column; }
 
 .row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-size: 13px; color: var(--ink-dim); }
@@ -151,6 +171,22 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
   backdrop-filter: blur(10px);
 }
 #thinking.hidden, .modal.hidden { display: none; }
+
+/* ---------- 浮动缩放控件 ---------- */
+#zoom-ctl {
+  position: fixed; bottom: 16px; right: 330px; z-index: 11;
+  display: flex; gap: 8px;
+}
+.zoom-btn {
+  width: 42px; height: 42px; padding: 0; border-radius: 50%;
+  font-size: 19px; line-height: 1; font-weight: 600;
+  background: var(--panel); border: 1px solid var(--panel-line);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+  display: flex; align-items: center; justify-content: center;
+}
+.zoom-btn:hover { background: rgba(232, 194, 106, 0.22); border-color: var(--gold); transform: translateY(-2px); }
+.zoom-btn:active { transform: translateY(0) scale(0.94); }
 .spinner {
   width: 14px; height: 14px; border-radius: 50%;
   border: 2px solid rgba(232, 194, 106, 0.25); border-top-color: var(--gold);
@@ -196,6 +232,7 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
 /* ---------- 响应式 ---------- */
 @media (max-width: 900px) {
   #panel { width: 250px; top: 88px; }
+  #zoom-ctl { right: 268px; }
   .brand h1 { font-size: 26px; }
   .rules-grid { grid-template-columns: 1fr; }
 }
@@ -216,63 +253,75 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
     </div>
   </header>
 
-  <!-- 侧面板 -->
+  <!-- 侧面板（卡片可展开/收起） -->
   <aside id="panel">
     <section class="card">
-      <h2>对局</h2>
-      <div class="row">
-        <label>模式</label>
-        <select id="sel-mode">
-          <option value="ai">人机对战</option>
-          <option value="pvp">双人对战</option>
-        </select>
-      </div>
-      <div class="row" id="row-level">
-        <label>难度</label>
-        <select id="sel-level">
-          <option value="easy">初学</option>
-          <option value="normal" selected>棋友</option>
-          <option value="hard">国手</option>
-        </select>
-      </div>
-      <div class="row" id="row-side">
-        <label>执方</label>
-        <select id="sel-side">
-          <option value="red" selected>红先</option>
-          <option value="black">黑后</option>
-        </select>
-      </div>
-      <div class="stats">
-        <div><span id="stat-move">0</span><em>回合</em></div>
-        <div><span id="stat-idle">0/60</span><em>无吃子</em></div>
-      </div>
-      <div class="btns">
-        <button id="btn-new" class="primary">新 局</button>
-        <button id="btn-undo">悔 棋</button>
-        <button id="btn-flip">翻转视角</button>
-        <button id="btn-reset-view">复位视角</button>
-        <button id="btn-sound" class="on">音效 ♪</button>
-        <button id="btn-rules">规则说明</button>
+      <h2 class="card-head">对局<i class="arrow"></i></h2>
+      <div class="card-body">
+        <div class="row">
+          <label>模式</label>
+          <select id="sel-mode">
+            <option value="ai">人机对战</option>
+            <option value="pvp">双人对战</option>
+          </select>
+        </div>
+        <div class="row" id="row-level">
+          <label>难度</label>
+          <select id="sel-level">
+            <option value="easy">初学</option>
+            <option value="normal" selected>棋友</option>
+            <option value="hard">国手</option>
+          </select>
+        </div>
+        <div class="row" id="row-side">
+          <label>执方</label>
+          <select id="sel-side">
+            <option value="red" selected>红先</option>
+            <option value="black">黑后</option>
+          </select>
+        </div>
+        <div class="stats">
+          <div><span id="stat-move">0</span><em>回合</em></div>
+          <div><span id="stat-idle">0/60</span><em>无吃子</em></div>
+        </div>
+        <div class="btns">
+          <button id="btn-new" class="primary">新 局</button>
+          <button id="btn-undo">悔 棋</button>
+          <button id="btn-flip">翻转视角</button>
+          <button id="btn-reset-view">复位视角</button>
+          <button id="btn-sound" class="on">音效 ♪</button>
+          <button id="btn-rules">规则说明</button>
+        </div>
       </div>
     </section>
 
     <section class="card grow">
-      <h2>着法记录</h2>
-      <div id="moves" class="moves"><p class="empty">尚未行棋</p></div>
+      <h2 class="card-head">着法记录<i class="arrow"></i></h2>
+      <div class="card-body moves-wrap">
+        <div id="moves" class="moves"><p class="empty">尚未行棋</p></div>
+      </div>
     </section>
 
     <section class="card">
-      <h2>战果</h2>
-      <div class="captured">
-        <div class="cap-row"><span class="cap-label red">红方战果</span><div id="cap-red" class="cap-list"></div></div>
-        <div class="cap-row"><span class="cap-label black">黑方战果</span><div id="cap-black" class="cap-list"></div></div>
+      <h2 class="card-head">战果<i class="arrow"></i></h2>
+      <div class="card-body">
+        <div class="captured">
+          <div class="cap-row"><span class="cap-label red">红方战果</span><div id="cap-red" class="cap-list"></div></div>
+          <div class="cap-row"><span class="cap-label black">黑方战果</span><div id="cap-black" class="cap-list"></div></div>
+        </div>
       </div>
     </section>
   </aside>
 
   <!-- 底部提示 -->
-  <div id="hint">点击棋子查看可走位置 · 拖动旋转视角 · 滚轮缩放 · 右键拖动平移</div>
+  <div id="hint">点击棋子查看可走位置 · 拖动旋转视角 · ＋－按钮/滚轮缩放 · 右键拖动平移</div>
   <div id="thinking" class="hidden"><span class="spinner"></span>对方思索中…</div>
+
+  <!-- 浮动缩放控件（放大/缩小） -->
+  <div id="zoom-ctl">
+    <button id="btn-zoom-in" class="zoom-btn" title="放大（+）">＋</button>
+    <button id="btn-zoom-out" class="zoom-btn" title="缩小（−）">－</button>
+  </div>
 
   <!-- 结算弹窗 -->
   <div id="modal-result" class="modal hidden">
@@ -910,16 +959,20 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
     ctx.strokeStyle = isRed ? 'rgba(255,210,150,0.55)' : 'rgba(200,205,215,0.45)';
     ctx.lineWidth = S * 0.012;
     ctx.beginPath();
-    ctx.arc(S / 2, S / 2, S * 0.40, 0, Math.PI * 2);
+    ctx.arc(S / 2, S / 2, S * 0.435, 0, Math.PI * 2);
     ctx.stroke();
-    // 字符
-    ctx.font = 'bold ' + Math.round(S * 0.56) + 'px "STKaiti","Kaiti SC","KaiTi","BiauKai","DFKai-SB",serif';
+    // 字符（大字号金漆，描边增强对比）
+    ctx.font = 'bold ' + Math.round(S * 0.70) + 'px "STKaiti","Kaiti SC","KaiTi","BiauKai","DFKai-SB",serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     var ink = isRed ? '#f7d789' : '#e9e4d2';
-    ctx.shadowColor = 'rgba(0,0,0,0.55)';
+    ctx.shadowColor = 'rgba(0,0,0,0.6)';
     ctx.shadowBlur = S * 0.02;
     ctx.shadowOffsetY = S * 0.012;
+    // 深色勾边先描一遍，再填字，任何背景下都清晰
+    ctx.lineWidth = S * 0.022;
+    ctx.strokeStyle = isRed ? 'rgba(60,12,4,0.9)' : 'rgba(8,10,14,0.9)';
+    ctx.strokeText(char, S / 2, S * 0.53);
     ctx.fillStyle = ink;
     ctx.fillText(char, S / 2, S * 0.53);
     ctx.shadowColor = 'transparent';
@@ -1109,7 +1162,7 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
     var gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.055), goldMat());
     gem.position.y = 0.66;
     g.add(gem);
-    g.add(facePlate(side === RED ? RED_CHAR[1] : BLACK_CHAR[1], side, 0.155, 0.27, 0.215, 0.5));
+    g.add(facePlate(side === RED ? RED_CHAR[1] : BLACK_CHAR[1], side, 0.19, 0.27, 0.21, 0.5));
     return g;
   }
 
@@ -1136,7 +1189,7 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
     hat.position.y = 0.50;
     hat.rotation.x = 0.30; // 前倾
     g.add(hat);
-    g.add(facePlate(side === RED ? RED_CHAR[2] : BLACK_CHAR[2], side, 0.135, 0.25, 0.19, 0.45));
+    g.add(facePlate(side === RED ? RED_CHAR[2] : BLACK_CHAR[2], side, 0.165, 0.25, 0.185, 0.45));
     return g;
   }
 
@@ -1178,7 +1231,7 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
       tusk.rotation.z = s * 0.3;
       g.add(tusk);
     });
-    g.add(facePlate(side === RED ? RED_CHAR[3] : BLACK_CHAR[3], side, 0.145, 0.42, 0.24, 0.42));
+    g.add(facePlate(side === RED ? RED_CHAR[3] : BLACK_CHAR[3], side, 0.18, 0.43, 0.235, 0.42));
     return g;
   }
 
@@ -1227,7 +1280,7 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
     var nostril = new THREE.Mesh(new THREE.TorusGeometry(0.024, 0.008, 8, 16), goldMat());
     nostril.position.set(0, 0.245, 0.375);
     g.add(nostril);
-    g.add(facePlate(side === RED ? RED_CHAR[4] : BLACK_CHAR[4], side, 0.13, 0.19, 0.21, 0.42));
+    g.add(facePlate(side === RED ? RED_CHAR[4] : BLACK_CHAR[4], side, 0.16, 0.20, 0.205, 0.42));
     return g;
   }
 
@@ -1283,7 +1336,7 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
       hub.rotation.z = Math.PI / 2;
       g.add(hub);
     });
-    g.add(facePlate(side === RED ? RED_CHAR[5] : BLACK_CHAR[5], side, 0.14, 0.28, 0.205, 0.42));
+    g.add(facePlate(side === RED ? RED_CHAR[5] : BLACK_CHAR[5], side, 0.175, 0.29, 0.20, 0.42));
     return g;
   }
 
@@ -1327,7 +1380,7 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
       wheel.position.set(sgn * 0.21, 0.13, 0);
       g.add(wheel);
     });
-    g.add(facePlate(side === RED ? RED_CHAR[6] : BLACK_CHAR[6], side, 0.135, 0.21, 0.18, 0.45));
+    g.add(facePlate(side === RED ? RED_CHAR[6] : BLACK_CHAR[6], side, 0.165, 0.22, 0.175, 0.45));
     return g;
   }
 
@@ -1355,7 +1408,7 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
     var plumeBall = new THREE.Mesh(new THREE.SphereGeometry(0.03, 12, 10), goldMat());
     plumeBall.position.y = 0.535;
     g.add(plumeBall);
-    g.add(facePlate(side === RED ? RED_CHAR[7] : BLACK_CHAR[7], side, 0.125, 0.235, 0.165, 0.42));
+    g.add(facePlate(side === RED ? RED_CHAR[7] : BLACK_CHAR[7], side, 0.15, 0.245, 0.16, 0.42));
     return g;
   }
 
@@ -1742,12 +1795,85 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
     opts = opts || {};
     var target = new THREE.Vector3(0, 0.3, 0);
     var shake = new THREE.Vector3(0, 0, 0); // 衰减式震屏偏移
+    var userAdjusted = false;               // 用户是否手动调整过视角
+    /* ---- 复位视角自适应：保证整个棋盘落在 UI 安全区内 ---- */
+    // 安全区：右侧面板 + 顶栏 + 底部提示条不遮挡棋盘
+    function safeArea() {
+      var w = window.innerWidth, h = window.innerHeight;
+      var panelW = w <= 900 ? 268 : 310;
+      return { l: 10, r: w - panelW - 10, t: 118, b: h - 58 };
+    }
+    // 棋盘包围盒半尺寸（含外框与棋子高度余量）
+    var HW = 5.4, HD = 5.9, HY = 0.85;
+    // 迭代求解：最小半径，使棋盘 8 角全部投影在安全区内
+    // 方案：修改投影矩阵的 film-offset 项（p[8]/p[9] 剪切 NDC），把投影中心
+    // 从屏幕中心移到安全区中心；随后判定 |NDC - 安全区中心| ≤ 安全区半宽
+    function fitBoard(theta, phi, baseR) {
+      var vw = window.innerWidth, vh = window.innerHeight;
+      var aspect = vw / vh;
+      var sa = safeArea();
+      var halfX = (sa.r - sa.l) / vw;   // 安全区半宽（NDC 满屏半宽 = 1）
+      var halfY = (sa.b - sa.t) / vh;
+      var cxNdc = 2 * ((sa.l + sa.r) / 2) / vw - 1;  // 安全区中心 NDC
+      var cyNdc = 1 - 2 * ((sa.t + sa.b) / 2) / vh;
+      // 重建投影矩阵并写入 film offset（resize 监听可能尚未处理）
+      if (Math.abs(camera.aspect - aspect) > 1e-4) {
+        camera.aspect = aspect;
+      }
+      camera.clearViewOffset();
+      camera.updateProjectionMatrix();
+      var pe = camera.projectionMatrix.elements;
+      pe[8] = -cxNdc;   // ndc.x 整体偏移 +cxNdc
+      pe[9] = -cyNdc;   // ndc.y 整体偏移 +cyNdc
+      camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+      var corners = [];
+      for (var sx = -1; sx <= 1; sx += 2)
+        for (var sy = 0; sy <= 1; sy++)
+          for (var sz = -1; sz <= 1; sz += 2)
+            corners.push([sx * HW, sy * HY, sz * HD]);
+      var r = baseR || 11.8;
+      var out = { radius: r, tx: 0, ty: 0.3, tz: 0 };
+      for (var iter = 0; iter < 40; iter++) {
+        var sp = Math.sin(phi), cp = Math.cos(phi);
+        camera.position.set(r * sp * Math.sin(theta), 0.3 + r * cp, r * sp * Math.cos(theta));
+        camera.lookAt(0, 0.3, 0);
+        camera.updateMatrixWorld();
+        var worst = 0;
+        for (var i = 0; i < corners.length; i++) {
+          var c = corners[i];
+          // 手动投影：world → view → clip（避免依赖渲染循环）
+          var m = camera.matrixWorldInverse.elements;
+          var vx = m[0] * c[0] + m[4] * c[1] + m[8] * c[2] + m[12];
+          var vy = m[1] * c[0] + m[5] * c[1] + m[9] * c[2] + m[13];
+          var vz = m[2] * c[0] + m[6] * c[1] + m[10] * c[2] + m[14];
+          var p = camera.projectionMatrix.elements;
+          var cx = p[0] * vx + p[8] * vz, cy = p[5] * vy + p[9] * vz, cw = -vz;
+          if (cw <= 0) { worst = 99; break; }
+          var ndcX = Math.abs(cx / cw - cxNdc) / halfX;
+          var ndcY = Math.abs(cy / cw - cyNdc) / halfY;
+          if (ndcX > worst) worst = ndcX;
+          if (ndcY > worst) worst = ndcY;
+        }
+        out.radius = r;
+        if (worst <= 0.98) break;
+        r *= 1.04;
+        if (r > 30) break;
+      }
+      return out;
+    }
     var sph = { theta: 0.32, phi: 0.95, radius: 11.8 };      // 目标值
     var cur = { theta: 0.32, phi: 0.95, radius: 11.8 };      // 当前值（阻尼逼近）
     var MIN_PHI = 0.32, MAX_PHI = 1.38;
-    var MIN_R = 6.5, MAX_R = 20;
+    var MIN_R = 5.5, MAX_R = 30;   // 缩放范围（上限与 fitBoard 一致，避免 fit 半径被钳制）
     var tween = null;
     var enabled = true;
+    // 初始即按当前窗口 fit，保证首屏整个棋盘可见
+    (function initFit() {
+      var fit = fitBoard(0.32, 0.95, 11.8);
+      sph.radius = cur.radius = fit.radius;
+      target.set(fit.tx, 0.3, 0);
+      apply();
+    })();
 
     function apply() {
       var sp = Math.sin(cur.phi), cp = Math.cos(cur.phi);
@@ -1788,7 +1914,7 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
         sph.phi -= dy * 0.0042;
         sph.phi = Math.max(MIN_PHI, Math.min(MAX_PHI, sph.phi));
         lastX = e.clientX; lastY = e.clientY;
-        tween = null;
+        tween = null; userAdjusted = true;
       } else if (mode === 'pan' && pointers.size === 1) {
         var panScale = cur.radius * 0.0016;
         var sinT = Math.sin(cur.theta), cosT = Math.cos(cur.theta);
@@ -1797,14 +1923,14 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
         target.x = Math.max(-4, Math.min(4, target.x));
         target.z = Math.max(-4.5, Math.min(4.5, target.z));
         lastX = e.clientX; lastY = e.clientY;
-        tween = null;
+        tween = null; userAdjusted = true;
       } else if (mode === 'pinch' && pointers.size === 2) {
         var p = Array.from(pointers.values());
         var d = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
         sph.radius *= pinchDist / Math.max(d, 1);
         sph.radius = Math.max(MIN_R, Math.min(MAX_R, sph.radius));
         pinchDist = d;
-        tween = null;
+        tween = null; userAdjusted = true;
       }
     });
     function release(e) {
@@ -1823,7 +1949,7 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
       e.preventDefault();
       sph.radius *= (1 + Math.sign(e.deltaY) * 0.09);
       sph.radius = Math.max(MIN_R, Math.min(MAX_R, sph.radius));
-      tween = null;
+      tween = null; userAdjusted = true;
     }, { passive: false });
     domElement.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 
@@ -1864,11 +1990,21 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
         var nt = sph.theta + Math.PI;
         tweenTo(nt, sph.phi, sph.radius, target.x, target.y, target.z, 1.0);
       },
-      reset: function () { // 复位到红方视角
-        tweenTo(0.32, 0.95, 11.8, 0, 0.3, 0, 0.9);
+      reset: function () { // 复位到红方视角（自适应保证棋盘完整可见）
+        userAdjusted = false;
+        var fit = fitBoard(0.32, 0.95, 11.8);
+        tweenTo(0.32, 0.95, fit.radius, 0, 0.3, 0, 0.9);
       },
       focus: function (v, radius) { // 聚焦某点（如被将军的将）
         tweenTo(sph.theta, sph.phi, radius || 10.5, v.x, v.y, v.z, 0.8);
+      },
+      zoomBy: function (factor) { // 缩放：factor>1 拉近（半径减小），<1 拉远；阻尼平滑
+        var nr = sph.radius / factor;
+        nr = Math.max(MIN_R, Math.min(MAX_R, nr));
+        if (Math.abs(nr - sph.radius) < 0.01) return;
+        sph.radius = nr;
+        tween = null;
+        userAdjusted = true;
       },
       nudgeShake: function (amp) { // 相机轻震（将军反馈，自动衰减）
         shake.x += (Math.random() - 0.5) * amp;
@@ -1877,15 +2013,24 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
       },
       get theta() { return sph.theta; },
       setView: function (theta, phi, radius, tx, ty, tz) { // 调试/测试用：直接设定视角
-        tween = null;
+        tween = null; userAdjusted = true;
         sph.theta = cur.theta = theta;
         sph.phi = cur.phi = phi;
         sph.radius = cur.radius = radius;
         if (tx != null) { target.x = tx; target.y = ty; target.z = tz; }
         apply();
       },
-      setEnabled: function (v) { enabled = v; }
+      setEnabled: function (v) { enabled = v; },
+      refit: function () { // 窗口变化后重新适配（无动画）
+        if (userAdjusted) return;
+        var f2 = fitBoard(sph.theta, sph.phi, 11.8);
+        tween = null;
+        sph.radius = cur.radius = f2.radius;
+        target.set(0, 0.3, 0);
+        apply();
+      }
     };
+    window.addEventListener('resize', function () { api.refit(); });
     return api;
   }
 
@@ -2594,6 +2739,16 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
     $('btn-undo').onclick = function () { XQ.audio.unlock(); undo(); };
     $('btn-flip').onclick = function () { controls.flip(); };
     $('btn-reset-view').onclick = function () { controls.reset(); };
+    // 浮动缩放控件（放大/缩小）
+    $('btn-zoom-in').onclick = function () { XQ.audio.unlock(); controls.zoomBy(1 / 0.82); XQ.audio.select(); };
+    $('btn-zoom-out').onclick = function () { XQ.audio.unlock(); controls.zoomBy(0.82); XQ.audio.select(); };
+    // 键盘 +/- 缩放（焦点不在输入框时）
+    window.addEventListener('keydown', function (e) {
+      var tag = (e.target && e.target.tagName) || '';
+      if (tag === 'SELECT' || tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.key === '+' || e.key === '=') { controls.zoomBy(1 / 0.82); }
+      else if (e.key === '-' || e.key === '_') { controls.zoomBy(0.82); }
+    });
     $('btn-rules').onclick = function () { XQ.ui.showRules(); };
     $('btn-close-rules').onclick = function () { XQ.ui.hideRules(); };
     $('btn-sound').onclick = function () {
@@ -2606,6 +2761,12 @@ button.off { color: var(--ink-dim); opacity: 0.6; }
     $('sel-level').onchange = function () { level = this.value; };
     $('sel-side').onchange = function () { humanSide = this.value === 'red' ? RED : BLACK; newGame(); };
     XQ.ui.setModeVisible(mode);
+    // 侧卡片展开/收起：点击标题栏切换
+    Array.prototype.forEach.call(document.querySelectorAll('#panel .card-head'), function (head) {
+      head.addEventListener('click', function () {
+        head.parentElement.classList.toggle('collapsed');
+      });
+    });
   }
 
   /* ---------------- 新局 ---------------- */

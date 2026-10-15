@@ -55,6 +55,16 @@
     $('btn-undo').onclick = function () { XQ.audio.unlock(); undo(); };
     $('btn-flip').onclick = function () { controls.flip(); };
     $('btn-reset-view').onclick = function () { controls.reset(); };
+    // 浮动缩放控件（放大/缩小）
+    $('btn-zoom-in').onclick = function () { XQ.audio.unlock(); controls.zoomBy(1 / 0.82); XQ.audio.select(); };
+    $('btn-zoom-out').onclick = function () { XQ.audio.unlock(); controls.zoomBy(0.82); XQ.audio.select(); };
+    // 键盘 +/- 缩放（焦点不在输入框时）
+    window.addEventListener('keydown', function (e) {
+      var tag = (e.target && e.target.tagName) || '';
+      if (tag === 'SELECT' || tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.key === '+' || e.key === '=') { controls.zoomBy(1 / 0.82); }
+      else if (e.key === '-' || e.key === '_') { controls.zoomBy(0.82); }
+    });
     $('btn-rules').onclick = function () { XQ.ui.showRules(); };
     $('btn-close-rules').onclick = function () { XQ.ui.hideRules(); };
     $('btn-sound').onclick = function () {
@@ -67,6 +77,12 @@
     $('sel-level').onchange = function () { level = this.value; };
     $('sel-side').onchange = function () { humanSide = this.value === 'red' ? RED : BLACK; newGame(); };
     XQ.ui.setModeVisible(mode);
+    // 侧卡片展开/收起：点击标题栏切换
+    Array.prototype.forEach.call(document.querySelectorAll('#panel .card-head'), function (head) {
+      head.addEventListener('click', function () {
+        head.parentElement.classList.toggle('collapsed');
+      });
+    });
   }
 
   /* ---------------- 新局 ---------------- */

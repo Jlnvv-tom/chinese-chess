@@ -20,63 +20,75 @@
     </div>
   </header>
 
-  <!-- 侧面板 -->
+  <!-- 侧面板（卡片可展开/收起） -->
   <aside id="panel">
     <section class="card">
-      <h2>对局</h2>
-      <div class="row">
-        <label>模式</label>
-        <select id="sel-mode">
-          <option value="ai">人机对战</option>
-          <option value="pvp">双人对战</option>
-        </select>
-      </div>
-      <div class="row" id="row-level">
-        <label>难度</label>
-        <select id="sel-level">
-          <option value="easy">初学</option>
-          <option value="normal" selected>棋友</option>
-          <option value="hard">国手</option>
-        </select>
-      </div>
-      <div class="row" id="row-side">
-        <label>执方</label>
-        <select id="sel-side">
-          <option value="red" selected>红先</option>
-          <option value="black">黑后</option>
-        </select>
-      </div>
-      <div class="stats">
-        <div><span id="stat-move">0</span><em>回合</em></div>
-        <div><span id="stat-idle">0/60</span><em>无吃子</em></div>
-      </div>
-      <div class="btns">
-        <button id="btn-new" class="primary">新 局</button>
-        <button id="btn-undo">悔 棋</button>
-        <button id="btn-flip">翻转视角</button>
-        <button id="btn-reset-view">复位视角</button>
-        <button id="btn-sound" class="on">音效 ♪</button>
-        <button id="btn-rules">规则说明</button>
+      <h2 class="card-head">对局<i class="arrow"></i></h2>
+      <div class="card-body">
+        <div class="row">
+          <label>模式</label>
+          <select id="sel-mode">
+            <option value="ai">人机对战</option>
+            <option value="pvp">双人对战</option>
+          </select>
+        </div>
+        <div class="row" id="row-level">
+          <label>难度</label>
+          <select id="sel-level">
+            <option value="easy">初学</option>
+            <option value="normal" selected>棋友</option>
+            <option value="hard">国手</option>
+          </select>
+        </div>
+        <div class="row" id="row-side">
+          <label>执方</label>
+          <select id="sel-side">
+            <option value="red" selected>红先</option>
+            <option value="black">黑后</option>
+          </select>
+        </div>
+        <div class="stats">
+          <div><span id="stat-move">0</span><em>回合</em></div>
+          <div><span id="stat-idle">0/60</span><em>无吃子</em></div>
+        </div>
+        <div class="btns">
+          <button id="btn-new" class="primary">新 局</button>
+          <button id="btn-undo">悔 棋</button>
+          <button id="btn-flip">翻转视角</button>
+          <button id="btn-reset-view">复位视角</button>
+          <button id="btn-sound" class="on">音效 ♪</button>
+          <button id="btn-rules">规则说明</button>
+        </div>
       </div>
     </section>
 
     <section class="card grow">
-      <h2>着法记录</h2>
-      <div id="moves" class="moves"><p class="empty">尚未行棋</p></div>
+      <h2 class="card-head">着法记录<i class="arrow"></i></h2>
+      <div class="card-body moves-wrap">
+        <div id="moves" class="moves"><p class="empty">尚未行棋</p></div>
+      </div>
     </section>
 
     <section class="card">
-      <h2>战果</h2>
-      <div class="captured">
-        <div class="cap-row"><span class="cap-label red">红方战果</span><div id="cap-red" class="cap-list"></div></div>
-        <div class="cap-row"><span class="cap-label black">黑方战果</span><div id="cap-black" class="cap-list"></div></div>
+      <h2 class="card-head">战果<i class="arrow"></i></h2>
+      <div class="card-body">
+        <div class="captured">
+          <div class="cap-row"><span class="cap-label red">红方战果</span><div id="cap-red" class="cap-list"></div></div>
+          <div class="cap-row"><span class="cap-label black">黑方战果</span><div id="cap-black" class="cap-list"></div></div>
+        </div>
       </div>
     </section>
   </aside>
 
   <!-- 底部提示 -->
-  <div id="hint">点击棋子查看可走位置 · 拖动旋转视角 · 滚轮缩放 · 右键拖动平移</div>
+  <div id="hint">点击棋子查看可走位置 · 拖动旋转视角 · ＋－按钮/滚轮缩放 · 右键拖动平移</div>
   <div id="thinking" class="hidden"><span class="spinner"></span>对方思索中…</div>
+
+  <!-- 浮动缩放控件（放大/缩小） -->
+  <div id="zoom-ctl">
+    <button id="btn-zoom-in" class="zoom-btn" title="放大（+）">＋</button>
+    <button id="btn-zoom-out" class="zoom-btn" title="缩小（−）">－</button>
+  </div>
 
   <!-- 结算弹窗 -->
   <div id="modal-result" class="modal hidden">
