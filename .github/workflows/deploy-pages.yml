@@ -26,6 +26,30 @@ jobs:
         with:
           node-version: '22'
 
+      - name: 检查 Pages 是否已启用（Actions 作为发布源）
+        uses: actions/github-script@v8
+        with:
+          script: |
+            try {
+              const { data } = await github.rest.repos.getPages({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+              });
+              core.info(`Pages 已启用：build_type=${data.build_type}  html_url=${data.html_url}`);
+              if (data.build_type !== 'workflow') {
+                core.setFailed(
+                  `Pages 的 Build and deployment Source 当前是 "${data.build_type}"，必须改为 "GitHub Actions"。` +
+                  `请打开 https://github.com/${context.repo.owner}/${context.repo.repo}/settings/pages 修改`
+                );
+              }
+            } catch (e) {
+              core.setFailed(
+                `仓库没有启用 GitHub Pages（HTTP ${e.status}）。` +
+                `请打开 https://github.com/${context.repo.owner}/${context.repo.repo}/settings/pages ，` +
+                `把 Build and deployment → Source 设为 "GitHub Actions" 后重跑本工作流。`
+              );
+            }
+
       - name: 规则引擎测试
         run: node test/rules.test.js
 
